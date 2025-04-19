@@ -77,6 +77,15 @@ export const FrontMatter: QuartzTransformerPlugin<Partial<Options>> = (userOpts)
               data.title = file.stem ?? i18n(cfg.configuration.locale).propertyDefaults.title
             }
 
+            if (data.url != null && data.url.toString() !== "") {
+              const urlOverride = data.url.toString()
+              file.data.urlOverride = urlOverride.startsWith("/")
+                    ? (urlOverride.substring(1) as FullSlug)
+                    : (urlOverride as FullSlug)
+            } else {
+              file.data.urlOverride = file.data.slug
+            }
+
             const tags = coerceToArray(coalesceAliases(data, ["tags", "tag"]))
             if (tags) data.tags = [...new Set(tags.map((tag: string) => slugTag(tag)))]
 
@@ -135,6 +144,7 @@ declare module "vfile" {
     } & Partial<{
         tags: string[]
         aliases: string[]
+        url: string
         modified: string
         created: string
         published: string

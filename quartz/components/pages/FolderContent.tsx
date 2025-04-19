@@ -41,7 +41,10 @@ export default ((opts?: Partial<FolderContentOptions>) => {
         .map((node) => {
           // regular file, proceed
           if (node.data) {
-            return node.data
+            return {
+              ...node.data,
+              slug: node.data.urlOverride ?? node.data.slug
+            }
           }
 
           if (node.isFolder && options.showSubfolders) {
@@ -78,7 +81,7 @@ export default ((opts?: Partial<FolderContentOptions>) => {
             }
 
             return {
-              slug: node.slug,
+              slug: node.urlOverride ?? node.slug,
               dates: getMostRecentDates(),
               frontmatter: {
                 title: node.displayName,

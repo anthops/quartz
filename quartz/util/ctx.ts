@@ -17,6 +17,7 @@ export interface Argv {
 
 export type BuildTimeTrieData = QuartzPluginData & {
   slug: string
+  urlOverride: string
   title: string
   filePath: string
 }
@@ -38,6 +39,7 @@ export function trieFromAllFiles(allFiles: QuartzPluginData[]): FileTrieNode<Bui
       trie.add({
         ...file,
         slug: file.slug!,
+        urlOverride: file.urlOverride!,
         title: file.frontmatter.title,
         filePath: file.filePath!,
       })

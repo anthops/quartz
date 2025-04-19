@@ -77,11 +77,11 @@ function createFileNode(currentSlug: FullSlug, node: FileTrieNode): HTMLLIElemen
   const clone = template.content.cloneNode(true) as DocumentFragment
   const li = clone.querySelector("li") as HTMLLIElement
   const a = li.querySelector("a") as HTMLAnchorElement
-  a.href = resolveRelative(currentSlug, node.slug)
-  a.dataset.for = node.slug
+  a.href = resolveRelative(currentSlug, node.urlOverride)
+  a.dataset.for = node.urlOverride
   a.textContent = node.displayName
 
-  if (currentSlug === node.slug) {
+  if (currentSlug === node.urlOverride) {
     a.classList.add("active")
   }
 

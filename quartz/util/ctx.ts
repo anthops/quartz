@@ -17,7 +17,7 @@ export interface Argv {
 
 export type BuildTimeTrieData = QuartzPluginData & {
   slug: string
-  urlOverride: string
+  urlOverride?: string
   title: string
   filePath: string
 }
@@ -29,17 +29,21 @@ export interface BuildCtx {
   allSlugs: FullSlug[]
   allFiles: FilePath[]
   trie?: FileTrieNode<BuildTimeTrieData>
+  urlOverrides: Map<FullSlug, FullSlug>
   incremental: boolean
 }
 
-export function trieFromAllFiles(allFiles: QuartzPluginData[]): FileTrieNode<BuildTimeTrieData> {
+export function trieFromAllFiles(
+  allFiles: QuartzPluginData[],
+  urlOverrides: Map<FullSlug, FullSlug>
+): FileTrieNode<BuildTimeTrieData> {
   const trie = new FileTrieNode<BuildTimeTrieData>([])
   allFiles.forEach((file) => {
     if (file.frontmatter) {
       trie.add({
         ...file,
         slug: file.slug!,
-        urlOverride: file.urlOverride!,
+        urlOverride: urlOverrides.get(file.slug!),
         title: file.frontmatter.title,
         filePath: file.filePath!,
       })

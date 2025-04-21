@@ -23,7 +23,7 @@ async function processContent(
   opts: FullPageLayout,
   resources: StaticResources,
 ) {
-  const slug = fileData.urlOverride!
+  const slug = fileData.urlOverride ?? fileData.slug!
   const cfg = ctx.cfg.configuration
   const externalResources = pageResources(pathToRoot(slug), resources)
   const componentData: QuartzComponentProps = {

@@ -40,7 +40,7 @@ export const CrawlLinks: QuartzTransformerPlugin<Partial<Options>> = (userOpts) 
       return [
         () => {
           return (tree: Root, file) => {
-            const curSlug = simplifySlug(file.data.slug!)
+            const curSlug = simplifySlug(file.data.urlOverride ?? file.data.slug!)
             const outgoing: Set<SimpleSlug> = new Set()
 
             const transformOptions: TransformOptions = {
@@ -101,26 +101,34 @@ export const CrawlLinks: QuartzTransformerPlugin<Partial<Options>> = (userOpts) 
                 // don't process external links or intra-document anchors
                 const isInternal = !(isAbsoluteUrl(dest) || dest.startsWith("#"))
                 if (isInternal) {
-                  dest = node.properties.href = transformLink(
-                    file.data.slug!,
-                    dest,
-                    transformOptions,
-                  )
+                    dest = transformLink(
+                      file.data.urlOverride ?? file.data.slug!,
+                      dest,
+                      transformOptions,
+                    )
 
-                  // url.resolve is considered legacy
-                  // WHATWG equivalent https://nodejs.dev/en/api/v18/url/#urlresolvefrom-to
-                  const url = new URL(dest, "https://base.com/" + stripSlashes(curSlug, true))
-                  const canonicalDest = url.pathname
-                  let [destCanonical, _destAnchor] = splitAnchor(canonicalDest)
-                  if (destCanonical.endsWith("/")) {
-                    destCanonical += "index"
-                  }
+                    // url.resolve is considered legacy
+                    // WHATWG equivalent https://nodejs.dev/en/api/v18/url/#urlresolvefrom-to
+                    const url = new URL(dest, "https://base.com/" + stripSlashes(curSlug, true))
+                    const canonicalDest = url.pathname
+                    let [destCanonical, _destAnchor] = splitAnchor(canonicalDest)
+                    if (destCanonical.endsWith("/")) {
+                      destCanonical += "index"
+                    }
 
-                  // need to decodeURIComponent here as WHATWG URL percent-encodes everything
-                  const full = decodeURIComponent(stripSlashes(destCanonical, true)) as FullSlug
-                  const simple = simplifySlug(full)
-                  outgoing.add(simple)
-                  node.properties["data-slug"] = full
+                    // need to decodeURIComponent here as WHATWG URL percent-encodes everything
+                    const full = decodeURIComponent(stripSlashes(destCanonical, true)) as FullSlug
+                    const destFull = ctx.urlOverrides.get(full) ?? full
+
+                    node.properties.href = transformLink(
+                      file.data.urlOverride ?? file.data.slug!,
+                      destFull,
+                      transformOptions,
+                    )
+
+                    const simple = simplifySlug(destFull)
+                    outgoing.add(simple)
+                    node.properties["data-slug"] = destFull
                 }
 
                 // rewrite link internals if prettylinks is on

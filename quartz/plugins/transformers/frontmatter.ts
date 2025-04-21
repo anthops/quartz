@@ -80,10 +80,9 @@ export const FrontMatter: QuartzTransformerPlugin<Partial<Options>> = (userOpts)
             if (data.url != null && data.url.toString() !== "") {
               const urlOverride = data.url.toString()
               file.data.urlOverride = urlOverride.startsWith("/")
-                    ? (urlOverride.substring(1) as FullSlug)
-                    : (urlOverride as FullSlug)
-            } else {
-              file.data.urlOverride = file.data.slug
+                ? (urlOverride.substring(1) as FullSlug)
+                : (urlOverride as FullSlug)
+              ctx.urlOverrides.set(file.data.slug!, urlOverride)
             }
 
             const tags = coerceToArray(coalesceAliases(data, ["tags", "tag"]))

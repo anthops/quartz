@@ -50,7 +50,7 @@ declare module "vfile" {
   // inserted in processors.ts
   interface DataMap {
     slug: FullSlug
-    urlOverride: FullSlug
+    urlOverride?: FullSlug
     filePath: FilePath
     relativePath: FilePath
   }

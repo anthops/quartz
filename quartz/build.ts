@@ -49,6 +49,7 @@ async function buildQuartz(argv: Argv, mut: Mutex, clientRefresh: () => void) {
     cfg,
     allSlugs: [],
     allFiles: [],
+    urlOverrides: new Map(),
     incremental: false,
   }
 

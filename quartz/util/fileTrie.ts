@@ -3,7 +3,7 @@ import { FullSlug, joinSegments } from "./path"
 
 interface FileTrieData {
   slug: string
-  urlOverride: string
+  urlOverride?: string
   title: string
   filePath: string
 }
@@ -48,13 +48,13 @@ export class FileTrieNode<T extends FileTrieData = ContentDetails> {
     return path
   }
 
-  get urlOverride(): FullSlug {
-    const path = joinSegments(...this.slugSegments) as FullSlug
+  get urlOverride(): FullSlug | undefined {
+    const path = joinSegments(...this.slugSegments) as FullSlug;
     if (this.isFolder) {
-      return joinSegments(path, "index") as FullSlug
+      return joinSegments(path, "index") as FullSlug;
     }
 
-    return (this.data?.urlOverride ?? this.slug) as FullSlug
+    return this.data?.urlOverride as FullSlug;
   }
 
   get slugSegment(): string {

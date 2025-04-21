@@ -78,7 +78,7 @@ export const ContentPage: QuartzEmitterPlugin<Partial<FullPageLayout>> = (userOp
       let containsIndex = false
 
       for (const [tree, file] of content) {
-        const slug = file.data.slug!
+        const slug = file.data.urlOverride ?? file.data.slug!
         if (slug === "index") {
           containsIndex = true
         }
@@ -104,12 +104,12 @@ export const ContentPage: QuartzEmitterPlugin<Partial<FullPageLayout>> = (userOp
       for (const changeEvent of changeEvents) {
         if (!changeEvent.file) continue
         if (changeEvent.type === "add" || changeEvent.type === "change") {
-          changedSlugs.add(changeEvent.file.data.slug!)
+          changedSlugs.add(changeEvent.file.data.urlOverride ?? changeEvent.file.data.slug!)
         }
       }
 
       for (const [tree, file] of content) {
-        const slug = file.data.slug!
+        const slug = file.data.urlOverride ?? file.data.slug!
         if (!changedSlugs.has(slug)) continue
         if (slug.endsWith("/index") || slug.startsWith("tags/")) continue
 

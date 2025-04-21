@@ -51,7 +51,7 @@ export default ((opts?: Partial<BreadcrumbOptions>) => {
     ctx,
   }: QuartzComponentProps) => {
     const trie = (ctx.trie ??= trieFromAllFiles(allFiles, ctx.urlOverrides))
-    const slugParts = fileData.slug!.split("/")
+    const slugParts = (fileData.urlOverride ?? fileData.slug!).split("/")
     const pathNodes = trie.ancestryChain(slugParts)
 
     if (!pathNodes) {
@@ -59,7 +59,11 @@ export default ((opts?: Partial<BreadcrumbOptions>) => {
     }
 
     const crumbs: CrumbData[] = pathNodes.map((node, idx) => {
-      const crumb = formatCrumb(node.displayName, fileData.slug!, simplifySlug(node.slug))
+      const crumb = formatCrumb(
+        node.displayName,
+        fileData.urlOverride ?? fileData.slug!,
+        simplifySlug(node.urlOverride ?? node.slug)
+      )
       if (idx === 0) {
         crumb.displayName = options.rootName
       }

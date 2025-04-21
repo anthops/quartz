@@ -23,7 +23,7 @@ export default ((opts?: Partial<BacklinksOptions>) => {
     displayClass,
     cfg,
   }: QuartzComponentProps) => {
-    const slug = simplifySlug(fileData.slug!)
+    const slug = simplifySlug(fileData.urlOverride ?? fileData.slug!)
     const backlinkFiles = allFiles.filter((file) => file.links?.includes(slug))
     if (options.hideWhenEmpty && backlinkFiles.length == 0) {
       return null
@@ -35,7 +35,7 @@ export default ((opts?: Partial<BacklinksOptions>) => {
           {backlinkFiles.length > 0 ? (
             backlinkFiles.map((f) => (
               <li>
-                <a href={resolveRelative(fileData.slug!, f.slug!)} class="internal">
+                <a href={resolveRelative(fileData.urlOverride ?? fileData.slug!, f.urlOverride ?? f.slug!)} class="internal">
                   {f.frontmatter?.title}
                 </a>
               </li>

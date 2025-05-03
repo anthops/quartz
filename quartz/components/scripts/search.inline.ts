@@ -267,7 +267,7 @@ async function setupSearch(searchElement: Element, currentSlug: FullSlug, data: 
     const slug = idDataMap[id]
     return {
       id,
-      slug,
+      slug: data[slug].urlOverride ?? slug,
       title: searchType === "tags" ? data[slug].title : highlight(term, data[slug].title ?? ""),
       content: highlight(term, data[slug].content ?? "", true),
       tags: highlightTags(term.substring(1), data[slug].tags),
@@ -474,7 +474,7 @@ async function fillDocument(data: ContentIndex) {
     promises.push(
       index.addAsync(id++, {
         id,
-        slug: slug as FullSlug,
+        slug: fileData.urlOverride ?? slug as FullSlug,
         title: fileData.title,
         content: fileData.content,
         tags: fileData.tags,
